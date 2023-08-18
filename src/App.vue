@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <input type="file" @change="file = $event.target.files[0]" />
-    <h2 v-if="file">There is a file</h2>
+    <img :src="fileSrc" alt="" />
   </div>
 </template>
 
@@ -10,14 +10,24 @@ export default {
   name: 'App',
   data () {
     return {
-      file: null
+      file: null,
+      fileSrc: null
     }
   },
   watch: {
     file (value) {
       console.log('------------------- FILE -------------------')
       console.log(value)
-      console.log()
+
+      if (value) {
+        const reader = new FileReader()
+        reader.onload = e => {
+          this.fileSrc = e.target.result
+        }
+        reader.readAsDataURL(value)
+      } else {
+        this.fileSrc = null
+      }
     }
   }
 }
@@ -40,6 +50,12 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 16px;
   min-height: 100vh;
+
+  img {
+    width: 50vw;
+    border-radius: 8px;
+  }
 }
 </style>
